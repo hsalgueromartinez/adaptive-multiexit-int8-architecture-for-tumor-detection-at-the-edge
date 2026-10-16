@@ -12,9 +12,9 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 CHECKPOINT_PATH = "./checkpoints/multi_exit_tiny_imagenet_best.pt"
 
 # Profiled FLOPs for Tiny-ImageNet (64x64 resolution, 200 classes)
-F1 = 0.1254 * 1e9  # Exit 1 (Stage 1 & 2)
-F2 = 0.3031 * 1e9  # Exit 2 (Stage 3)
-F3 = 0.3650 * 1e9  # Exit 3 (Stage 4)
+F1 = 0.1254 * 1e9  # Exit 1
+F2 = 0.3031 * 1e9  # Exit 2 
+F3 = 0.3650 * 1e9  # Exit 3
 
 def main():
     print("=======================================================")

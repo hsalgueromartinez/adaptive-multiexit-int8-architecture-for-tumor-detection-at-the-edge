@@ -13,10 +13,10 @@ from multi_exit_model import MultiExitConvNeXt
 CHECKPOINT_FP32 = "./checkpoints/multi_exit_pcam_best.pt"
 CHECKPOINT_INT8 = "./checkpoints/multi_exit_int8.pt"
 
-# Profiled FLOPs for PCam (96x96, 2 classes)
-F1 = 0.2821 * 1e9  # Stage 1 & 2
-F2 = 0.6818 * 1e9  # Stage 3
-F3 = 0.8210 * 1e9  # Stage 4
+
+F1 = 0.2821 * 1e9
+F2 = 0.6818 * 1e9
+F3 = 0.8210 * 1e9
 
 def load_int8_model(sample_batch, device):
     torch.backends.quantized.engine = "fbgemm"
@@ -43,7 +43,7 @@ def extract_logits(model, test_loader, device, desc):
     return torch.cat(l1_list), torch.cat(l2_list), torch.cat(l3_list), torch.cat(target_list)
 
 def compute_metrics(preds, targets):
-    # Class 1 is Tumor, Class 0 is Normal
+    # Class 1 is Tumor, Class 0 is Healthy
     tp = ((preds == 1) & (targets == 1)).sum().item()
     fp = ((preds == 1) & (targets == 0)).sum().item()
     fn = ((preds == 0) & (targets == 1)).sum().item()
@@ -107,7 +107,7 @@ def main():
 
     thresholds = np.concatenate((np.arange(0.50, 0.95, 0.05), np.arange(0.95, 1.01, 0.01)))
 
-    # 1. Forward Pass: FP32 (CUDA)
+    #Forward Pass: FP32 (CUDA)
     gpu_dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\n[1/2] Evaluating FP32 on {gpu_dev}...")
     fp32_model = MultiExitConvNeXt().to(gpu_dev)
@@ -115,7 +115,7 @@ def main():
     l1_f, l2_f, l3_f, targets = extract_logits(fp32_model, test_loader, gpu_dev, "FP32 Test")
     flops_f, rec_f, f1_f, acc_f = sweep_clinical_thresholds(l1_f, l2_f, l3_f, targets, thresholds)
 
-    # 2. Forward Pass: INT8 (CPU)
+    #Forward Pass: INT8 (CPU)
     cpu_dev = torch.device("cpu")
     print("\n[2/2] Evaluating INT8 on CPU...")
     int8_model = load_int8_model(sample_batch.to(cpu_dev), cpu_dev)
@@ -128,7 +128,7 @@ def main():
     _, rec_e3, f1_e3 = compute_metrics(l3_f.argmax(dim=1), targets)
     _, rec_int8_static, f1_int8_static = compute_metrics(l3_i.argmax(dim=1), targets)
 
-    # Print Summary Table
+    #Summary Table
     print("\n" + "=" * 80)
     print(f"{'Tau':<5} | {'INT8 GFLOPs':<11} | {'Accuracy':<10} | {'Tumor Recall':<13} | {'F1-Score':<10}")
     print("-" * 80)
@@ -136,12 +136,10 @@ def main():
         print(f"{tau:<5.2f} | {fl:<11.4f} | {ac:<9.2f}% | {rc:<12.2f}% | {f1:<9.2f}%")
     print("=" * 80)
 
-    # -------------------------------------------------------------
-    # Dual-Panel Figure: Recall & F1 vs. FLOPs
-    # -------------------------------------------------------------
+    # Recall and F1 vs. FLOPs
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6), dpi=300)
 
-    # Panel 1: Tumor Recall (Clinical Sensitivity) vs. FLOPs
+    # Tumor Recall (Clinical Sensitivity) vs. FLOPs
     ax1.plot(flops_f, rec_f, 'b-', marker='o', linewidth=2.0, label='Adaptive FP32')
     ax1.plot(flops_i, rec_i, 'm--', marker='s', linewidth=2.0, label='Adaptive INT8')
     ax1.scatter([F1/1e9], [rec_e1], color='orange', marker='^', s=130, zorder=5, label=f'Static Exit 1 ({rec_e1:.1f}%)')
@@ -154,7 +152,7 @@ def main():
     ax1.grid(True, linestyle='--', alpha=0.6)
     ax1.legend(loc='lower right', fontsize=9.5)
 
-    # Panel 2: F1-Score vs. FLOPs
+    #F1-Score vs. FLOPs
     ax2.plot(flops_f, f1_f, 'b-', marker='o', linewidth=2.0, label='Adaptive FP32')
     ax2.plot(flops_i, f1_i, 'm--', marker='s', linewidth=2.0, label='Adaptive INT8')
     ax2.scatter([F1/1e9], [f1_e1], color='orange', marker='^', s=130, zorder=5, label=f'Static Exit 1 ({f1_e1:.1f}%)')

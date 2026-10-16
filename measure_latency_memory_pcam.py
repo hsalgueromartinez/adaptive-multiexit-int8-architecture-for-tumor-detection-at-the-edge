@@ -10,7 +10,7 @@ from multi_exit_model import MultiExitConvNeXt
 CHECKPOINT_FP32 = "./checkpoints/multi_exit_pcam_best.pt"
 CHECKPOINT_INT8 = "./checkpoints/multi_exit_int8.pt"
 
-# FLOPs from your Step 3.4 profiling
+
 FLOPS_E1 = 0.2821
 FLOPS_E2 = 0.6818
 FLOPS_E3 = 0.8210
@@ -43,7 +43,7 @@ def main():
     print("Edge Benchmarking: Single-Image Latency & Memory Footprint")
     print("===============================================================")
 
-    # 1. Memory on Disk
+    # Memory on Disk
     fp32_mb = os.path.getsize(CHECKPOINT_FP32) / (1024 * 1024)
     int8_mb = os.path.getsize(CHECKPOINT_INT8) / (1024 * 1024)
     print(f"\n1. Storage / Checkpoint Footprint on Disk:")
@@ -52,7 +52,7 @@ def main():
 
     dummy_patch = torch.randn(1, 3, 96, 96)
 
-    # 2. Stage-by-Stage Latency Benchmarking (FP32 on CPU)
+    # Stage-by-Stage Latency Benchmarking (FP32 on CPU)
     print(f"\n2. Stage-by-Stage Latency on CPU (FP32 PyTorch Runtime)...")
     fp32_model = MultiExitConvNeXt().to(torch.device("cpu"))
     fp32_model.load_state_dict(torch.load(CHECKPOINT_FP32, map_location="cpu", weights_only=True), strict=False)
@@ -66,18 +66,17 @@ def main():
     print(f"   • Exit 2 (Stage 3)   : {lat_fp32_e2:.2f} ms")
     print(f"   • Exit 3 (Full Stage): {lat_fp32_full:.2f} ms")
 
-    # 3. Full-Model Quantized Latency (INT8 fbgemm on CPU)
+    # Full-Model Quantized Latency (INT8 fbgemm on CPU)
     print(f"\n3. Quantized INT8 Latency on CPU (FBGEMM Engine)...")
     int8_model = load_int8_model(dummy_patch)
     lat_int8_full = measure_latency_ms(lambda x: int8_model(x), dummy_patch)
     print(f"   • INT8 Full Forward Pass: {lat_int8_full:.2f} ms  ({lat_fp32_full / lat_int8_full:.1f}x speedup vs FP32)")
 
-    # Derived stage latencies for INT8 based on stage compute proportion
     scale = lat_int8_full / lat_fp32_full
     lat_int8_e1 = lat_fp32_e1 * scale
     lat_int8_e2 = lat_fp32_e2 * scale
 
-    # 4. Dynamic Average Latency per Operating Point
+    # Dynamic Average Latency per Operating Point
     print("\n4. Dynamic Latencies across Evaluated Operating Points (INT8 Edge):")
     print(f"{'Operating Point':<24} | {'Threshold':<9} | {'Avg Latency (ms)':<16} | {'Speedup vs Baseline':<20}")
     print("-" * 78)

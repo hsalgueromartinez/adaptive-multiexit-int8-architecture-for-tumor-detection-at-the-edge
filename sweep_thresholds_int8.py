@@ -12,7 +12,6 @@ from multi_exit_model import MultiExitConvNeXt
 DEVICE = torch.device("cpu")
 INT8_CHECKPOINT = "./checkpoints/multi_exit_int8.pt"
 
-# FLOPs profiling constants for PCam (from Step 3.4)
 FLOPS_E1 = 0.2821
 FLOPS_E2 = 0.6818
 FLOPS_E3 = 0.8210
@@ -22,15 +21,13 @@ def load_quantized_model_from_statedict(sample_batch):
     torch.backends.quantized.engine = "fbgemm"
     qconfig_mapping = get_default_qconfig_mapping("fbgemm")
 
-    # Step A: Instantiate unquantized architecture shell on CPU
+    # Instantiate unquantized architecture shell on CPU
     shell_model = MultiExitConvNeXt().to(DEVICE)
     shell_model.eval()
 
-    # Step B: Trace graph structure with prepare_fx and convert_fx (instantaneous)
     prepared = prepare_fx(shell_model, qconfig_mapping, (sample_batch,))
     int8_model = convert_fx(prepared)
 
-    # Step C: Inject your saved INT8 weights directly into the quantized graph
     state_dict = torch.load(INT8_CHECKPOINT, map_location=DEVICE, weights_only=True)
     int8_model.load_state_dict(state_dict)
     int8_model.eval()
@@ -45,11 +42,11 @@ def sweep_int8():
     # Use strictly the validation split
     _, val_loader, _ = get_pcam_loaders(pipeline_type="augmented", batch_size=64, num_workers=2)
 
-    # 1. Grab 1 sample batch to reconstruct FX graph structure
+
     sample_batch = next(iter(val_loader))[0].to(DEVICE)
     int8_model = load_quantized_model_from_statedict(sample_batch)
 
-    # 2. Gather INT8 validation logits
+   
     all_l1, all_l2, all_l3, all_targets = [], [], [], []
     print("\n--- 2. Gathering INT8 Validation Logits (CPU FBGEMM) ---")
     with torch.no_grad():
@@ -71,7 +68,7 @@ def sweep_int8():
     conf2, preds2 = torch.max(F.softmax(logits2, dim=1), dim=1)
     preds3 = logits3.argmax(dim=1)
 
-    # 3. Sweep Threshold Grid
+    # Sweep Threshold Grid
     print("\n--- 3. Sweeping INT8 Thresholds ---")
     print(f"{'Tau':<6} | {'Accuracy':<10} | {'Tumor Recall':<13} | {'Avg GFLOPs':<11} | {'Exit 1 %':<10} | {'Exit 2 %':<10} | {'Exit 3 %':<10}")
     print("-" * 84)
@@ -99,7 +96,7 @@ def sweep_int8():
         correct += (preds3[exit3_mask] == targets[exit3_mask]).sum().item()
         acc = (correct / total_samples) * 100.0
 
-        # Tumor Recall (Sensitivity on Class 1)
+        # Tumor Recall (Sensitivity)
         preds_all = torch.empty_like(targets)
         preds_all[exit1_mask] = preds1[exit1_mask]
         preds_all[exit2_mask] = preds2[exit2_mask]

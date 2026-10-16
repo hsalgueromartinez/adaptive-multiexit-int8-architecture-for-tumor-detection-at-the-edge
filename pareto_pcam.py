@@ -13,10 +13,10 @@ from multi_exit_model import MultiExitConvNeXt
 CHECKPOINT_FP32 = "./checkpoints/multi_exit_pcam_best.pt"
 CHECKPOINT_INT8 = "./checkpoints/multi_exit_int8.pt"
 
-# Measured FLOPs from your Step 3.4 fvcore profiling
-F1 = 0.2821 * 1e9  # Exit 1 (Stage 1 & 2)
-F2 = 0.6818 * 1e9  # Exit 2 (Stage 3)
-F3 = 0.8210 * 1e9  # Exit 3 (Stage 4 - Full Baseline)
+
+F1 = 0.2821 * 1e9  # Exit 1
+F2 = 0.6818 * 1e9  # Exit 2 
+F3 = 0.8210 * 1e9  # Exit 3
 
 def load_int8_model(sample_batch, device):
     torch.backends.quantized.engine = "fbgemm"
@@ -89,7 +89,7 @@ def main():
 
     thresholds = np.concatenate((np.arange(0.50, 0.95, 0.05), np.arange(0.95, 1.01, 0.01)))
 
-    # 1. Forward Pass: FP32 Model (CUDA if available)
+    # Forward Pass: FP32 Model (CUDA if available)
     gpu_dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"\n--- 1. Evaluating FP32 Model on Test Set ({gpu_dev}) ---")
     fp32_model = MultiExitConvNeXt().to(gpu_dev)
@@ -97,7 +97,7 @@ def main():
     l1_f, l2_f, l3_f, targets = extract_logits(fp32_model, test_loader, gpu_dev, "FP32 Test")
     fp32_flops, fp32_accs = evaluate_threshold_sweep(l1_f, l2_f, l3_f, targets, thresholds)
 
-    # 2. Forward Pass: INT8 Model (CPU)
+    # Forward Pass: INT8 Model (CPU)
     cpu_dev = torch.device("cpu")
     print("\n--- 2. Evaluating INT8 Model on Test Set (CPU FBGEMM) ---")
     int8_model = load_int8_model(sample_batch.to(cpu_dev), cpu_dev)
@@ -110,7 +110,7 @@ def main():
     acc_static_e3 = (l3_f.argmax(dim=1) == targets).sum().item() / len(targets) * 100.0
     acc_int8_static = (l3_i.argmax(dim=1) == targets).sum().item() / len(targets) * 100.0
 
-    # Save summary text
+
     with open("pareto_summary.txt", "w") as f:
         f.write("--- Block 7: Final Test Set Evaluation ---\n")
         f.write(f"Static Exit 1: {F1/1e9:.4f} GFLOPs | Acc: {acc_static_e1:.2f}%\n")
@@ -122,22 +122,21 @@ def main():
         for tau, fa, ia, ff, ifl in zip(thresholds, fp32_accs, int8_accs, fp32_flops, int8_flops):
             f.write(f"{tau:<5.2f} | {fa:<8.2f}% | {ia:<8.2f}% | {ff:<11.4f} | {ifl:<11.4f}\n")
 
-    # 3. Plotting the Final Pareto Frontier
+
     plt.figure(figsize=(11, 6.5), dpi=300)
 
-    # Dynamic Curves
+
     plt.plot(fp32_flops, fp32_accs, 'b-', marker='o', linewidth=2.2, label='Adaptive Multi-Exit (FP32)')
     plt.plot(int8_flops, int8_accs, 'm--', marker='s', linewidth=2.2, label='Adaptive Multi-Exit (INT8 Quantized)')
 
-    # Static Baselines
+
     plt.scatter([F3/1e9], [acc_static_e3], color='red', marker='*', s=220, zorder=5, label='Static Full-Depth FP32 Baseline')
     plt.scatter([F3/1e9], [acc_int8_static], color='black', marker='X', s=160, zorder=5, label='Static Full-Depth INT8 Baseline')
 
-    # Static Individual Exits
+
     plt.scatter([F1/1e9], [acc_static_e1], color='orange', marker='^', s=130, zorder=5, label='Static Exit 1 Only (Stage 2)')
     plt.scatter([F2/1e9], [acc_static_e2], color='green', marker='D', s=110, zorder=5, label='Static Exit 2 Only (Stage 3)')
 
-    # Annotations
     plt.annotate('Emergency Edge Mode\n(High E1 Exit, ~0.29 GFLOPs)', 
                  xy=(int8_flops[2], int8_accs[2]), 
                  xytext=(int8_flops[2] + 0.04, int8_accs[2] - 0.35), 

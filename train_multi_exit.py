@@ -11,7 +11,7 @@ from multi_exit_model import MultiExitConvNeXt
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# --- Step 4.1: Joint Distillation Loss ---
+# joint Distillation Loss
 class MultiExitDistillationLoss(nn.Module):
     def __init__(self, alphas=(1.0, 1.0, 1.0), betas=(0.5, 0.5), temperature=3.0):
         super().__init__()
@@ -22,13 +22,13 @@ class MultiExitDistillationLoss(nn.Module):
         self.kl = nn.KLDivLoss(reduction="batchmean")
 
     def forward(self, logits1, logits2, logits3, targets):
-        # 1. Supervised Cross-Entropy on all heads
+        #Supervised Cross-Entropy on all heads
         l_ce1 = self.ce(logits1, targets)
         l_ce2 = self.ce(logits2, targets)
         l_ce3 = self.ce(logits3, targets)
         supervised_loss = self.alphas[0] * l_ce1 + self.alphas[1] * l_ce2 + self.alphas[2] * l_ce3
 
-        # 2. Knowledge Distillation: Stage 4 teacher supervises Exits 1 & 2
+        #Knowledge Distillation, teacher supervises Exits 1 & 2
         teacher_soft = F.softmax(logits3.detach() / self.T, dim=1)
         
         kd1 = self.kl(F.log_softmax(logits1 / self.T, dim=1), teacher_soft) * (self.T ** 2)
@@ -37,7 +37,7 @@ class MultiExitDistillationLoss(nn.Module):
 
         return supervised_loss + distillation_loss
 
-# --- Step 4.3: Standalone Exit Profiling ---
+
 def profile_individual_exits():
     print("\n--- Step 4.3: Profiling Individual Standalone Exits (FLOPs) ---")
     model = MultiExitConvNeXt().to(DEVICE)
@@ -77,7 +77,7 @@ def profile_individual_exits():
     print(f"Exit 3 Alone (Stage 4) : {flops3:,} FLOPs ({flops3 / 1e9:.3f} GFLOPs)")
     return flops1, flops2, flops3
 
-# --- Step 4.2: Multi-Exit Fine-Tuning Execution ---
+# Multi-Exit Fine-Tuning Execution
 def train_multi_exit(epochs=10, batch_size=64, lr=1e-4):
     os.makedirs("./checkpoints", exist_ok=True)
     train_loader, val_loader, test_loader = get_pcam_loaders(pipeline_type="augmented", batch_size=batch_size)

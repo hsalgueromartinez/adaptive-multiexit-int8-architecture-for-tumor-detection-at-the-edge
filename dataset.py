@@ -16,13 +16,13 @@ class RandomDiscreteRotation:
 NORM_MEAN = [0.485, 0.456, 0.406]
 NORM_STD  = [0.229, 0.224, 0.225]
 
-# Pipeline A: Minimalist baseline (no domain-specific augmentations)
+# Pipeline A: no domain-specific augmentations
 raw_train_transform = T.Compose([
     T.ToTensor(),
     T.Normalize(mean=NORM_MEAN, std=NORM_STD)
 ])
 
-# Pipeline B: Histology-informed (geometric invariance + stain simulation)
+# Pipeline B: geometric invariance + stain simulation
 augmented_train_transform = T.Compose([
     T.RandomHorizontalFlip(p=0.5),
     T.RandomVerticalFlip(p=0.5),
@@ -32,18 +32,14 @@ augmented_train_transform = T.Compose([
     T.Normalize(mean=NORM_MEAN, std=NORM_STD)
 ])
 
-# Evaluation / Validation / Test: Strictly deterministic
+
 eval_transform = T.Compose([
     T.ToTensor(),
     T.Normalize(mean=NORM_MEAN, std=NORM_STD)
 ])
 
 def get_pcam_loaders(data_root="./data", pipeline_type="augmented", batch_size=64, num_workers=2, subset_fraction=1.0):
-    """
-    Loads PCam splits.
-    pipeline_type: 'raw' or 'augmented'
-    subset_fraction: fraction of dataset to use for fast local validation (e.g. 0.1 for 10% data)
-    """
+
     train_tf = augmented_train_transform if pipeline_type == "augmented" else raw_train_transform
     
     train_set = PCAM(root=data_root, split="train", transform=train_tf, download=True)

@@ -14,7 +14,6 @@ def sweep_thresholds():
     print("Block 6: Threshold Sweeping & Operating Points")
     print("=======================================================")
 
-    # Use strictly the validation split for tuning
     _, val_loader, _ = get_pcam_loaders(pipeline_type="augmented", batch_size=64, num_workers=2)
 
     model = MultiExitConvNeXt().to(DEVICE)
@@ -27,7 +26,7 @@ def sweep_thresholds():
     with torch.no_grad():
         for images, targets in tqdm(val_loader, desc="Forward Pass"):
             images = images.to(DEVICE)
-            # Use Operational Mode 1 to get all exits simultaneously
+            
             l1, l2, l3 = model(images)
             all_logits1.append(l1.cpu())
             all_logits2.append(l2.cpu())
@@ -40,7 +39,7 @@ def sweep_thresholds():
     targets = torch.cat(all_targets)
     total_samples = len(targets)
 
-    # Step 6.1: Confidence Policy Definition (Maximum Softmax Probability)
+    # Confidence Policy Definition (Maximum Softmax Probability)
     conf1, preds1 = torch.max(F.softmax(logits1, dim=1), dim=1)
     conf2, preds2 = torch.max(F.softmax(logits2, dim=1), dim=1)
     preds3 = logits3.argmax(dim=1)
@@ -53,12 +52,12 @@ def sweep_thresholds():
     thresholds = np.concatenate((np.arange(0.50, 0.95, 0.05), np.arange(0.95, 1.00, 0.01)))
     
     for tau in thresholds:
-        # Simulate dynamic routing
+       
         exit1_mask = conf1 >= tau
         exit2_mask = (~exit1_mask) & (conf2 >= tau)
         exit3_mask = ~(exit1_mask | exit2_mask)
         
-        # Calculate accuracy for this routing combination
+        
         correct = 0
         correct += (preds1[exit1_mask] == targets[exit1_mask]).sum().item()
         correct += (preds2[exit2_mask] == targets[exit2_mask]).sum().item()

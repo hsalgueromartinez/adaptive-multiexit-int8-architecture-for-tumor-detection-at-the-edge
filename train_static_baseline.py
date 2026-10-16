@@ -34,7 +34,7 @@ def train_static_baseline(epochs=10, target_acc=0.90):
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-2)
     
-    # Cosine Annealing scheduler to help stabilize late-stage convergence
+  
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
     best_val_acc = 0.0
@@ -96,5 +96,4 @@ def train_static_baseline(epochs=10, target_acc=0.90):
     print(f"Static FP32 checkpoint permanently saved at: {checkpoint_path}")
 
 if __name__ == "__main__":
-    # Start training for up to 10 epochs, stopping early if it hits 90% validation accuracy
     train_static_baseline(epochs=10, target_acc=0.90)
