@@ -174,3 +174,11 @@ python train_multi_exit.py
 # Apply post-training static INT8 quantization
 python quantize_multi_exit.py
 ```
+
+---
+
+## Authors
+
+*   **David Piera** - *Developer & Researcher*
+*   **Hector Salguero** - *Developer & Researcher*
+---
