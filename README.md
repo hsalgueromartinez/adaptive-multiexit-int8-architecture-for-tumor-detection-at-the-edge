@@ -181,4 +181,6 @@ python quantize_multi_exit.py
 
 *   **David Piera** - *Developer & Researcher* — [@hsalgueromartinez](https://github.com/hsalgueromartinez)
 *   **Hector Salguero** - *Developer & Researcher* — [@hsalgueromartinez](https://github.com/hsalgueromartinez)
+
+*Universiteit van Amsterdam (UvA) — Big Data at the Edge Project*
 ---
