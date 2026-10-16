@@ -1,4 +1,4 @@
-# Adaptive Multi-Exit Architecture with Static INT8 Quantization for Clinical Tumor Detection at the Edge
+# Adaptive Multi-Exit Architecture with Knowledge Distillation and Static INT8 Quantization for Clinical Tumor Detection at the Edge
 
 Edge deployment of adaptive deep learning models for medical pathology screening and computer vision under strict battery, compute, and latency budgets. This project implements dynamic early-exit branching combined with post-training static INT8 quantization across **PatchCamelyon (PCam)** (primary clinical histology benchmark) and **Tiny-ImageNet-200** (representational scaling ablation).
 
@@ -12,7 +12,7 @@ To evaluate the pre-trained baselines, multi-exit networks, and INT8 quantized m
 # 1. Install gdown
 pip install gdown
 
-# 2. Download pre-trained weights archive from Google Drive
+# 2. Download the pre-trained weights archive from Google Drive
 gdown 1KdYwuz4KSEdVkrPgY-zybhE7W89mjH6I -O checkpoints.zip
 
 # 3. Extract checkpoints into project root
@@ -80,7 +80,7 @@ cd ..
 ├── pareto_pcam.py                  # Evaluates and plots Accuracy vs. FLOPs Pareto frontier on PCam
 ├── pareto_recall_f1_pcam.py        # Evaluates clinical safety (Tumor Recall and F1-Score vs. FLOPs)
 ├── pareto_tiny_imagenet.py         # Evaluates Accuracy vs. FLOPs Pareto frontier on Tiny-ImageNet
-└── run_ablation.py                 # Full ablation pipeline running baselines across datasets
+└── run_ablation.py                 # Ablation on preprocessing the baseline model
 ```
 
 ---
