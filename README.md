@@ -29,12 +29,22 @@ Because raw medical slides and image archives are large, the dataset directories
 ### 1. PatchCamelyon (PCam) — Primary Benchmark
 The `dataset.py` module uses `torchvision.datasets.PCAM(..., download=True)`. When executing any training or evaluation script on PCam for the first time, PyTorch automatically downloads and verifies the official `.h5` splits (`camelyonpatch_level_2_split_*.h5`) into the `data/pcam/` folder.
 
-If downloading manually or transferring from another cluster:
-1. Create directory: `mkdir -p data/pcam`
-2. Place the following files inside `data/pcam/`:
-   - `camelyonpatch_level_2_split_train_x.h5`, `camelyonpatch_level_2_split_train_y.h5`
-   - `camelyonpatch_level_2_split_valid_x.h5`, `camelyonpatch_level_2_split_valid_y.h5`
-   - `camelyonpatch_level_2_split_test_x.h5`, `camelyonpatch_level_2_split_test_y.h5`
+#### ⚠️ Note on downloading the PCAM dataset
+This project uses `torchvision.datasets.PCAM(download=True)`. However, PyTorch hosts this dataset on a Google Drive link that frequently hits its daily download quota, which will cause a `gdown.exceptions.FileURLRetrievalError` when you try to run the code.
+
+If you encounter this error, you must download the dataset manually from the official Zenodo repository. Run the following commands in the root of the project:
+
+```bash
+mkdir -p data/pcam
+cd data/pcam
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_train_x.h5.gz
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_train_y.h5.gz
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_valid_x.h5.gz
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_valid_y.h5.gz
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_test_x.h5.gz
+wget https://zenodo.org/records/2546921/files/camelyonpatch_level_2_split_test_y.h5.gz
+cd ../..
+```
 
 ### 2. Tiny-ImageNet-200 — Visual Ablation Benchmark
 To download and extract the Tiny-ImageNet-200 benchmark:
