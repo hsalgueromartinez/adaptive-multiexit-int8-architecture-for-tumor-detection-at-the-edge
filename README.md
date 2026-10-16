@@ -179,6 +179,6 @@ python quantize_multi_exit.py
 
 ## Authors
 
-*   **David Piera** - *Developer & Researcher*
-*   **Hector Salguero** - *Developer & Researcher*
+*   **David Piera** - *Developer & Researcher* — [@hsalgueromartinez](https://github.com/hsalgueromartinez)
+*   **Hector Salguero** - *Developer & Researcher* — [@hsalgueromartinez](https://github.com/hsalgueromartinez)
 ---
