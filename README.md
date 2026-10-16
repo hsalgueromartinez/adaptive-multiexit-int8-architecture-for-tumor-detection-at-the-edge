@@ -121,13 +121,30 @@ cd ..
 
 ### 1. Environment Setup
 
+This project uses a mix of Conda-specific system libraries (like CUDA drivers) and PyPI Python packages. Because of this mixed environment, a standard pip install or conda create using the requirements.txt will fail.
+
+Follow these steps to split the dependencies and set up your environment correctly:
+
+Run the following commands to clone the repository and parse the requirements.txt file into two separate files, one for Conda and one for Pip:
+
 ```bash
 git clone https://github.com/hsalgueromartinez/adaptive-multiexit-int8-architecture-for-tumor-detection-at-the-edge.git
 cd adaptive-multiexit-int8-architecture-for-tumor-detection-at-the-edge
 
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+# Extract pip packages and format them properly (Package==Version)
+grep "=pypi_0" requirements.txt | awk -F'=' '{print $1"=="$2}' > pip_reqs.txt
+
+# Extract the remaining packages for Conda
+grep -v "=pypi_0" requirements.txt > conda_reqs.txt
+```
+Create a new environment (named tumor_detection_env) using the Conda dependencies. We include the conda-forge, pytorch, and nvidia channels to ensure all specialized libraries are found:
+```bash
+conda create --name tumor_detection_env --file conda_reqs.txt -c conda-forge -c pytorch -c nvidia
+
+conda activate tumor_detection_env
+
+pip install -r pip_reqs.txt
+
 ```
 
 ### 2. Download Pre-trained Weights
