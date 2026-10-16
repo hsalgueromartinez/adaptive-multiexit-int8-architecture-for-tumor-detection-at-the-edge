@@ -1,0 +1,31 @@
+Exit 1 (Stage 2) : 125,413,824 FLOPs (0.125 GFLOPs)
+Exit 2 (Stage 3) : 303,082,368 FLOPs (0.303 GFLOPs)
+Exit 3 (Stage 4) : 365,028,096 FLOPs (0.365 GFLOPs)
+Epoch 1/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [04:45<00:00,  5.47it/s]
+Epoch 1 Val Accuracies -> Exit 1: 27.35% | Exit 2: 65.43% | Exit 3: 70.36%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 2/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:09<00:00,  8.25it/s]
+Epoch 2 Val Accuracies -> Exit 1: 38.74% | Exit 2: 70.36% | Exit 3: 73.18%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 3/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:09<00:00,  8.24it/s]
+Epoch 3 Val Accuracies -> Exit 1: 44.16% | Exit 2: 71.92% | Exit 3: 74.10%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 4/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:18<00:00,  7.86it/s]
+Epoch 4 Val Accuracies -> Exit 1: 47.17% | Exit 2: 72.93% | Exit 3: 74.30%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 5/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:12<00:00,  8.12it/s]
+Epoch 5 Val Accuracies -> Exit 1: 49.80% | Exit 2: 73.24% | Exit 3: 74.53%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 6/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:09<00:00,  8.23it/s]
+Epoch 6 Val Accuracies -> Exit 1: 51.64% | Exit 2: 73.31% | Exit 3: 74.82%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 7/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:09<00:00,  8.23it/s]
+Epoch 7 Val Accuracies -> Exit 1: 52.62% | Exit 2: 74.04% | Exit 3: 75.00%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 8/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:04<00:00,  8.47it/s]
+Epoch 8 Val Accuracies -> Exit 1: 52.82% | Exit 2: 73.84% | Exit 3: 75.34%
+--> Saved best Tiny-ImageNet checkpoint!
+Epoch 9/10 [Tiny-ImageNet]: 100%|███████████████████████████████████████████████████████████████████████████████████| 1563/1563 [02:56<00:00,  8.87it/s]
+Epoch 9 Val Accuracies -> Exit 1: 53.26% | Exit 2: 73.96% | Exit 3: 75.00%
+Epoch 10/10 [Tiny-ImageNet]: 100%|██████████████████████████████████████████████████████████████████████████████████| 1563/1563 [03:04<00:00,  8.45it/s]
+Epoch 10 Val Accuracies -> Exit 1: 53.40% | Exit 2: 74.21% | Exit 3: 75.33%

@@ -1,0 +1,12 @@
+Downloading: "https://download.pytorch.org/models/convnext_tiny-983f1562.pth" to /home/hector/.cache/torch/hub/checkpoints/convnext_tiny-983f1562.pth
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 109M/109M [00:33<00:00, 3.39MB/s] 
+Unsupported operator aten::gelu encountered 18 time(s)                                                                                                               
+Unsupported operator aten::mul encountered 18 time(s)
+Unsupported operator aten::add_ encountered 18 time(s)
+The following submodules of the model were never called during the trace of the graph. They may be unused, or they were accessed by direct calls to .forward() or via other python methods. In the latter case they will have zeros for statistics, though their statistics will still contribute to their parent calling module.
+features.1.0.stochastic_depth, features.1.1.stochastic_depth, features.1.2.stochastic_depth, features.3.0.stochastic_depth, features.3.1.stochastic_depth, features.3.2.stochastic_depth, features.5.0.stochastic_depth, features.5.1.stochastic_depth, features.5.2.stochastic_depth, features.5.3.stochastic_depth, features.5.4.stochastic_depth, features.5.5.stochastic_depth, features.5.6.stochastic_depth, features.5.7.stochastic_depth, features.5.8.stochastic_depth, features.7.0.stochastic_depth, features.7.1.stochastic_depth, features.7.2.stochastic_depth
+
+--- ConvNeXt-Tiny Static Baseline Profile ---
+Input Shape : (1, 3, 96, 96)
+Total MACs / FLOPs : 820,964,352 (0.821 GFLOPs)
+Methodology validated. Keep fvcore constant for all future exits.

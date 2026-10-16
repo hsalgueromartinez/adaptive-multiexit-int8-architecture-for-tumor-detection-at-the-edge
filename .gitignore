@@ -1,0 +1,29 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Checkpoints directory and all PyTorch model weights
+checkpoints/
+*.pt
+*.pth
+*.bin
+
+# Datasets and large data archives
+data/
+data_tiny_imagenet/
+*.h5
+*.hdf5
+*.zip
+*.tar.gz
+
+# Virtual environment (if inside the project directory)
+venv/
+.venv/
+env/
+
+# System / IDE metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
