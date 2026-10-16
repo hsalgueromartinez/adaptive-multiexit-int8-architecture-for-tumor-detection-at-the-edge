@@ -1,4 +1,4 @@
-# Adaptive Multi-Exit Deep Neural Networks for Edge Inference
+# Adaptive Multi-Exit Deep Neural Network with static INT8 quantization and Knowledge Distillation for clinical tumor detection on edge devices.
 
 Edge deployment of adaptive deep learning models for medical pathology screening and computer vision under strict battery, compute, and latency budgets. This project implements dynamic early-exit branching combined with post-training static INT8 quantization across **PatchCamelyon (PCam)**, **PathMNIST**, and **Tiny-ImageNet-200**.
 
