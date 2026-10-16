@@ -147,15 +147,7 @@ pip install -r pip_reqs.txt
 
 ```
 
-### 2. Download Pre-trained Weights
-
-```bash
-gdown 1KdYwuz4KSEdVkrPgY-zybhE7W89mjH6I -O checkpoints.zip
-unzip checkpoints.zip
-rm checkpoints.zip
-```
-
-### 3. Threshold Sweeps & Profiling
+### 2. Threshold Sweeps & Profiling
 
 ```bash
 # Analyze FP32 dynamic early exits
@@ -168,13 +160,13 @@ python sweep_thresholds_int8.py
 python test_flops.py
 ```
 
-### 4. Edge Latency & Memory Benchmark
+### 3. Edge Latency & Memory Benchmark
 
 ```bash
 python measure_latency_memory_pcam.py
 ```
 
-### 5. Generate Pareto Frontiers & Clinical Recall Figures
+### 4. Generate Pareto Frontiers & Clinical Recall Figures
 
 ```bash
 # Accuracy vs. FLOPs frontier (PatchCamelyon)
